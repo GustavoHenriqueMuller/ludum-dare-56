@@ -7,6 +7,9 @@ require("ui")
 function love.load()
     love.graphics.setBackgroundColor(1, 1, 1)
     love.graphics.setFont(FONT)
+    love.graphics.setDefaultFilter("nearest", "nearest")
+
+    math.randomseed(os.time())
 
     -- Load sprites.
     Sprite("ant")
@@ -45,19 +48,16 @@ function love.mousepressed(x, y, button, istouch)
     elseif UI.mode == UI_MODE.SPAWNING then
         for i = 1, #UI.button_spawn_lanes do
             if UI.button_spawn_lanes[i]:contains_mouse() then
-                local new_entity = Entity(
-                    GAME,
+                GAME:add_entity(Entity(
                     SPRITES.ant,
-                    GAME.lanes[i].start_x,
-                    GAME.lanes[i].start_y,
-                    1.5,
+                    GAME.lanes[i].start_player_x,
+                    GAME.lanes[i].start_player_y,
+                    20,
                     3,
                     1,
                     i,
                     CONTROLLER_TAG.PLAYER
-                )
-
-                GAME.lanes[i].entities[#GAME.lanes[i].entities + 1] = new_entity.id
+                ))
             end
         end
 

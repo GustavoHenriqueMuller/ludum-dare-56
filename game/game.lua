@@ -21,7 +21,7 @@ function Game:draw()
 
     if UI.mode == UI_MODE.SPAWNING then
         for i = 1, #GAME.lanes do
-            love.graphics.draw(GAME.lanes[i].sprite.image, GAME.lanes[i].start_x, GAME.lanes[i].start_y)
+            love.graphics.draw(GAME.lanes[i].sprite.image, GAME.lanes[i].start_player_x, GAME.lanes[i].start_player_y)
         end
     end
 
@@ -53,7 +53,7 @@ function Game:update()
     end
 
     self.player_controller:update()
-    self.enemy_controller:update()
+    self.enemy_controller:update(self)
 end
 
 function Game:load_bases()
@@ -62,24 +62,66 @@ function Game:load_bases()
     local base_margin_y = 175
 
     -- Spawn player base.
-    self.player_base = Entity(self, SPRITES.player_base, base_margin_x, base_margin_y, 0, base_hp, 0, CONTROLLER_TAG.PLAYER)
+    self.player_base = self:add_entity(Entity(
+        SPRITES.player_base,
+        base_margin_x,
+        base_margin_y,
+        0,
+        base_hp,
+        0,
+        -1,
+        CONTROLLER_TAG.PLAYER
+    ))
 
     -- Spawn enemy base.
     local enemy_base_width = SPRITES.enemy_base.image:getDimensions()
-    self.enemy_base = Entity(self, SPRITES.enemy_base, love.graphics.getWidth() - enemy_base_width - base_margin_x, base_margin_y, 0, base_hp, 0, CONTROLLER_TAG.ENEMY)
+
+    self.enemy_base = self:add_entity(Entity(
+        SPRITES.enemy_base,
+        love.graphics.getWidth() - enemy_base_width - base_margin_x,
+        base_margin_y,
+        0,
+        base_hp,
+        0,
+        -1,
+        CONTROLLER_TAG.ENEMY
+    ))
+end
+
+function Game:add_entity(entity)
+    self.entities[entity.id] = entity
+
+    if entity.lane_index ~= -1 then
+        local lane = self.lanes[entity.lane_index]
+        lane.entities_ids[entity.id] = true
+    end
+
+    return entity
+end
+
+function Game:remove_entity(entity_id)
+    local lane_index = self.entities[entity_id].lane_index
+
+    print(entity_id)
+
+    if lane_index ~= -1 then
+        self.lanes[lane_index].entities_ids[entity_id] = nil
+    end
+
+    self.entities[entity_id] = nil
 end
 
 function Game:load_lanes()
     local lane_spawn_x = 225
-    local lane_spawn_y = 216
+    local lane_spawn_y = 168
 
     for _ = 1, 6 do
-        local lane = Lane(lane_spawn_x, lane_spawn_y)
+        local lane = Lane(lane_spawn_x, lane_spawn_y, love.graphics.getWidth() - lane_spawn_x - 64, lane_spawn_y)
         self.lanes[#self.lanes + 1] = lane
 
         local button_lane = Button(SPRITES.lane_spawn, lane_spawn_x, lane_spawn_y)
         UI.button_spawn_lanes[#UI.button_spawn_lanes + 1] = button_lane
 
-        lane_spawn_y = lane_spawn_y + 64
+        lane_spawn_y = lane_spawn_y + 72
     end
 end
