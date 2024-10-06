@@ -1,23 +1,24 @@
 require("entity")
 require("sprite")
+require("projectiles.poison_ball")
 
 Scorpion = Entity:extend()
 Scorpion.database = {}
-Scorpion.database.speed = 2
+Scorpion.database.speed = 0.4
 Scorpion.database.hp = 6
-Scorpion.database.damage = 2
+Scorpion.database.damage = 20
 Scorpion.database.base_damage = 2
 Scorpion.database.attack_type = ATTACK_TYPE.RANGED
-Scorpion.database.attack_range = 100
-Scorpion.database.cost = 18
+Scorpion.database.attack_range = 300
+Scorpion.database.cost = 180
 Scorpion.database.description = string.format(
     "Scorpion" ..
-    "\n\nThe Scorpion is a fragile fast-moving creature that attacks with poison from a distance." ..
+    "\n\nThe Scorpion is a very slow moving creature that attacks with poison from a distance." ..
     "\n\nDamage: %d" ..
     "\nBase Damage: %d" ..
     "\nHP: %d" ..
     "\nSpeed: %.2f" ..
-    "\nAttack type: %s (range: %d)",
+    "\nAttack type: %s (%dpx)",
 
     Scorpion.database.damage,
     Scorpion.database.base_damage,
@@ -30,7 +31,7 @@ Scorpion.database.description = string.format(
 function Scorpion:init(x, y, lane_index, controller_tag)
     self:base_init(
         SPRITES.scorpion,
-        nil,
+        PoisonBall,
 
         Scorpion.database.speed,
         Scorpion.database.hp,

@@ -2,11 +2,13 @@ require("class")
 require("entity")
 require("player_controller")
 require("enemy_controller")
+require("utils")
 
 Game = class()
 
 function Game:init()
     self.entities = {}
+    self.projectiles = {}
     self.lanes = {}
     self.player_controller = PlayerController()
     self.enemy_controller = EnemyController()
@@ -24,7 +26,7 @@ function Game:draw()
     love.graphics.draw(background_sprite.image, 0, love.graphics:getHeight() - background_height)
 
     -- Draw entities/shadows.
-    for _, entity in pairs(GAME.entities) do
+    for _, entity in pairs(self.entities) do
         love.graphics.setColor(1, 1, 1)
 
         -- Draw shadow.
@@ -41,8 +43,13 @@ function Game:draw()
         end
     end
 
+    -- Draw projectiles.
+    for _, projectile in pairs(self.projectiles) do
+        projectile:draw()
+    end
+
     -- Draw health bars/texts.
-    for _, entity in pairs(GAME.entities) do
+    for _, entity in pairs(self.entities) do
         -- Draw health bar.
         local entity_width = entity.sprite.image:getDimensions()
         local health_bar_margin_y = 5
@@ -68,11 +75,17 @@ function Game:update()
     -- Update entities (movement and collision information).
     for _, entity in pairs(self.entities) do
         entity:update(self)
+        Utils.log(entity)
+    end
+
+    -- Update projectiles.
+    for _, projectile in pairs(self.projectiles) do
+        projectile:update(self)
     end
 
     -- Check and do attacks.
     for _, entity in pairs(self.entities) do
-        entity:check_and_do_attacks(self, dt)
+        entity:combat(self, dt)
     end
 
     self:remove_dead_entities()
@@ -84,16 +97,22 @@ end
 function Game:remove_dead_entities()
     local entities_ids_to_remove = {}
 
-    for entity_id, entity in pairs(self.entities) do
-        if entity.hp == 0 then
-            -- Adds gold if the entity destroyed was an enemy.
-            if entity.tag == CONTROLLER_TAG.ENEMY then
-                self.player_controller.gold = self.player_controller.gold + entity.cost
-            else
-                self.enemy_controller.gold = self.enemy_controller.gold + entity.cost
-            end
+    for i = 1, #self.lanes do
+        local lane = self.lanes[i]
 
-            entities_ids_to_remove[#entities_ids_to_remove + 1] = entity_id
+        for entity_id in pairs(lane.entities_ids) do
+            local entity = self.entities[entity_id]
+
+            if entity.hp == 0 then
+                -- Adds gold if the entity destroyed was an enemy.
+                if entity.tag == CONTROLLER_TAG.ENEMY then
+                    self.player_controller.gold = self.player_controller.gold + entity.cost
+                else
+                    self.enemy_controller.gold = self.enemy_controller.gold + entity.cost
+                end
+
+                entities_ids_to_remove[#entities_ids_to_remove + 1] = entity_id
+            end
         end
     end
 
@@ -167,6 +186,14 @@ function Game:remove_entity(entity_id)
     end
 
     self.entities[entity_id] = nil
+end
+
+function Game:add_projectile(projectile)
+    self.projectiles[projectile.id] = projectile
+end
+
+function Game:remove_projectile(projectile_id)
+    self.projectiles[projectile_id] = nil
 end
 
 function Game:load_lanes()

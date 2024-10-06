@@ -9,7 +9,7 @@ Ant.database.damage = 3
 Ant.database.base_damage = 2
 Ant.database.attack_type = ATTACK_TYPE.MELEE
 Ant.database.attack_range = 0
-Ant.database.cost = 12
+Ant.database.cost = 120
 Ant.database.description = string.format(
     "Ant" ..
     "\n\nThe ant is a cheap all-rounder, ideal for tanking the frontlines." ..

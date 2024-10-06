@@ -214,5 +214,7 @@ function UI:key_pressed(game, key)
         UI:select_entity(game, 1)
     elseif key == '2' then
         UI:select_entity(game, 2)
+    elseif key == '3' then
+        UI:select_entity(game, 3)
     end
 end

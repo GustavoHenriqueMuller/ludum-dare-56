@@ -5,7 +5,8 @@ require("entities.ant")
 EnemyController = Controller:extend()
 
 function EnemyController:init()
-    self:base_init(1.5)
+    -- self:base_init(1.5) @TODO
+    self:base_init(5)
 end
 
 function EnemyController:update(game)
