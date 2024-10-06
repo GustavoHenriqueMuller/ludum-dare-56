@@ -41,14 +41,20 @@ function Controller:buy_entity(game, entity_class, lane_index, controller_tag)
 
         local is_player = controller_tag == CONTROLLER_TAG.PLAYER
 
-        local x = is_player and GAME.lanes[lane_index].start_player_x or GAME.lanes[lane_index].start_enemy_x;
-        local y = is_player and GAME.lanes[lane_index].start_player_y or GAME.lanes[lane_index].start_enemy_y;
+        local x = (is_player and GAME.lanes[lane_index].start_player_x) or GAME.lanes[lane_index].start_enemy_x;
+        local y = (is_player and GAME.lanes[lane_index].start_player_y) or GAME.lanes[lane_index].start_enemy_y;
 
-        game:add_entity(entity_class(
+        local new_entity = entity_class(
             x,
             y,
             lane_index,
             controller_tag
-        ))
+        )
+
+        -- Acount for sprites that are taller than normal (frog).
+        local extra_sprite_height = math.max(0, new_entity.sprite.height - SPRITES.lane_spawn.height)
+        new_entity.y = new_entity.y - extra_sprite_height
+
+        game:add_entity(new_entity)
     end
 end

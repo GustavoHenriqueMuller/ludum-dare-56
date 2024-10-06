@@ -2,12 +2,13 @@ require("class")
 require("entities.ant")
 require("entities.snail")
 require("entities.scorpion")
+require("entities.frog")
 
 FONT_HEIGHT = 22
 FONT = love.graphics.newFont("assets/04B_03__.ttf", FONT_HEIGHT)
 
 UI_MODE = {NORMAL = "Normal", SPAWNING = "Spawning"}
-UI_BUTTON_ENTITIES = {Ant, Snail, Scorpion}
+UI_BUTTON_ENTITIES = {Ant, Snail, Scorpion, Frog}
 UI_HEIGHT = 75
 
 UI = class()
@@ -39,10 +40,8 @@ function UI:load_buttons(game)
 
             -- Draw the description box/text.
             if self:contains_mouse() then
-                local button_width, button_height = self.sprite.image:getDimensions()
-
                 local description_box_width, description_box_height = 400, 300
-                local description_box_x, description_box_y = self.x + button_width / 2, self.y + button_height / 2
+                local description_box_x, description_box_y = self.x + self.sprite.width / 2, self.y + self.sprite.height / 2
                 local margin = 8
 
                 -- Draw box underneath.
@@ -140,12 +139,15 @@ function UI:draw(game)
     -- Draw gold text per each button entity.
     for i = 1, #self.button_entities do
         local button_entity = self.button_entities[i]
-        local button_entity_width, button_entity_height = button_entity.sprite.image:getDimensions()
 
         local entity_cost_text = "$" .. UI_BUTTON_ENTITIES[i].database.cost
         local entity_cost_text_width = FONT:getWidth(entity_cost_text)
 
-        love.graphics.print(entity_cost_text, button_entity.x + button_entity_width / 2 - entity_cost_text_width / 2, button_entity.y + button_entity_height)
+        love.graphics.print(
+            entity_cost_text,
+            button_entity.x + button_entity.sprite.width / 2 - entity_cost_text_width / 2,
+            button_entity.y + button_entity.sprite.height
+        )
     end
 
     -- Draw buttons in reverse order.
@@ -216,5 +218,7 @@ function UI:key_pressed(game, key)
         UI:select_entity(game, 2)
     elseif key == '3' then
         UI:select_entity(game, 3)
+    elseif key == '4' then
+        UI:select_entity(game, 4)
     end
 end

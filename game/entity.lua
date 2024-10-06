@@ -133,8 +133,12 @@ function Entity:combat(game, dt)
                     attacking_entity:take_damage(self.damage)
                 else
                     -- If we are ranged, spawn projectile.
-                    local self_width, self_height = self.sprite.image:getDimensions()
-                    local new_projectile = self.projectile(self.x + self_width / 2, self.y + self_height / 2, self.lane_index, self.tag)
+                    local new_projectile = self.projectile(
+                        self.x + self.sprite.width / 2,
+                        self.y + self.sprite.height / 2,
+                        self.lane_index,
+                        self.tag
+                    )
 
                     game:add_projectile(new_projectile)
                 end
@@ -150,13 +154,10 @@ function Entity:take_damage(amount)
 end
 
 function Entity:check_collision(other_entity)
-    local self_width, self_height = self.sprite.image:getDimensions()
-    local other_width, other_height = other_entity.sprite.image:getDimensions()
-
-    local is_colliding = self.x < other_entity.x + other_width and
-                         self.x + self_width > other_entity.x and
-                         self.y < other_entity.y + other_height and
-                         self.y + self_height > other_entity.y
+    local is_colliding = self.x < other_entity.x + other_entity.sprite.width and
+                         self.x + self.sprite.width > other_entity.x and
+                         self.y < other_entity.y + other_entity.sprite.height and
+                         self.y + self.sprite.height > other_entity.y
 
     return is_colliding
 end

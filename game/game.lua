@@ -20,10 +20,9 @@ end
 function Game:draw()
     -- Draw background.
     local background_sprite = SPRITES["background"]
-    local _, background_height = background_sprite.image:getDimensions()
 
     love.graphics.setColor(1, 1, 1)
-    love.graphics.draw(background_sprite.image, 0, love.graphics:getHeight() - background_height)
+    love.graphics.draw(background_sprite.image, 0, love.graphics:getHeight() - background_sprite.height)
 
     -- Draw entities/shadows.
     for _, entity in pairs(self.entities) do
@@ -31,15 +30,18 @@ function Game:draw()
 
         -- Draw shadow.
         if entity.lane_index ~= -1 then
-            love.graphics.draw(SPRITES["shadow"].image, entity.x, entity.y)
+            love.graphics.draw(
+                SPRITES.shadow.image,
+                entity.x + entity.sprite.width / 2 - SPRITES.shadow.width / 2,
+                entity.y + entity.sprite.height * 0.8 - SPRITES.shadow.height / 2
+            )
         end
 
         -- Draw entity.
         if entity.tag == CONTROLLER_TAG.PLAYER then
             love.graphics.draw(entity.sprite.image, entity.x, entity.y)
         else
-            local entity_width = entity.sprite.image:getDimensions()
-            love.graphics.draw(entity.sprite.image, entity.x, entity.y, 0, -1, 1, entity_width)
+            love.graphics.draw(entity.sprite.image, entity.x, entity.y, 0, -1, 1, entity.sprite.width)
         end
     end
 
@@ -51,21 +53,26 @@ function Game:draw()
     -- Draw health bars/texts.
     for _, entity in pairs(self.entities) do
         -- Draw health bar.
-        local entity_width = entity.sprite.image:getDimensions()
         local health_bar_margin_y = 5
 
         love.graphics.setColor(0, 0, 0)
-        love.graphics.rectangle("fill", entity.x, entity.y + health_bar_margin_y, entity_width, 4)
+        love.graphics.rectangle("fill", entity.x, entity.y + health_bar_margin_y, entity.sprite.width, 4)
 
         love.graphics.setColor(1, 0, 0)
-        love.graphics.rectangle("fill", entity.x, entity.y + health_bar_margin_y, entity_width * (entity.hp / entity.max_hp), 4)
+        love.graphics.rectangle(
+            "fill",
+            entity.x,
+            entity.y + health_bar_margin_y,
+            entity.sprite.width * (entity.hp / entity.max_hp),
+            4
+        )
 
         -- Draw health text.
         local health_text = entity.hp .. "/" .. entity.max_hp
         local health_text_width = FONT:getWidth(health_text)
 
         love.graphics.setColor(1, 1, 1)
-        love.graphics.print(health_text, entity.x + entity_width / 2 - health_text_width / 2, entity.y - 15)
+        love.graphics.print(health_text, entity.x + entity.sprite.width / 2 - health_text_width / 2, entity.y - 15)
     end
 end
 
@@ -146,8 +153,6 @@ function Game:load_bases()
     ))
 
     -- Spawn enemy base.
-    local base_width = SPRITES.base.image:getDimensions()
-
     self.enemy_base = self:add_entity(Entity(
         SPRITES.base,
         nil,
@@ -160,7 +165,7 @@ function Game:load_bases()
         0,
         0,
 
-        love.graphics.getWidth() - base_width - base_margin_x,
+        love.graphics.getWidth() - SPRITES.base.width - base_margin_x,
         base_margin_y,
         -1,
         CONTROLLER_TAG.ENEMY

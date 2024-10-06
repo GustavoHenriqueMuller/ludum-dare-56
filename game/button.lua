@@ -14,9 +14,8 @@ end
 
 function Button:contains_mouse()
     local mouse_x, mouse_y = love.mouse.getPosition()
-    local sprite_width, sprite_height = self.sprite.image:getDimensions()
-
-    local contains_mouse = mouse_x >= self.x and mouse_x <= self.x + sprite_width and mouse_y >= self.y and mouse_y <= self.y + sprite_height
+    local contains_mouse = mouse_x >= self.x and mouse_x <= self.x + self.sprite.width and
+                           mouse_y >= self.y and mouse_y <= self.y + self.sprite.height
 
     return contains_mouse
 end
