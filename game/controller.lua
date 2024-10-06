@@ -9,9 +9,9 @@ function Controller:init(gold_per_tick)
 end
 
 function Controller:base_init(gold_per_tick)
-    self.gold = 12
+    self.gold = 0
     self.gold_timer = 0
-    self.gold_multiplier = 0
+    self.gold_multiplier = 1
     self.gold_per_tick = gold_per_tick or 1
 end
 
