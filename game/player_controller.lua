@@ -4,5 +4,5 @@ require("controller")
 PlayerController = Controller:extend()
 
 function PlayerController:init()
-    self:base_init(40)
+    self:base_init(10)
 end

@@ -129,7 +129,7 @@ function Game:remove_dead_entities()
 end
 
 function Game:load_bases()
-    local base_hp = 35
+    local base_hp = 100
     local base_margin_x = 10
     local base_margin_y = 175
 

@@ -8,7 +8,7 @@ FONT_HEIGHT = 22
 FONT = love.graphics.newFont("assets/04B_03__.ttf", FONT_HEIGHT)
 
 UI_MODE = {NORMAL = "Normal", SPAWNING = "Spawning"}
-UI_BUTTON_ENTITIES = {Ant, Snail, Scorpion, Frog}
+UI_BUTTON_ENTITIES = {Ant, Scorpion, Snail, Frog}
 UI_HEIGHT = 75
 
 UI = class()
