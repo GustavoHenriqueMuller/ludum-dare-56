@@ -40,8 +40,21 @@ function Entity:update(game)
     end
 
     -- Stop if colliding with entity in same lane.
-    self.colliding_entity_id = -1
+    self.colliding_entity_id = self:get_colliding_entity_id(game)
 
+    -- Moves the entity if not colliding.
+    if self.colliding_entity_id == -1 then
+        self.attack_timer = 0
+
+        if self.tag == CONTROLLER_TAG.PLAYER then
+            self.x = self.x + self.speed
+        else
+            self.x = self.x - self.speed
+        end
+    end
+end
+
+function Entity:get_colliding_entity_id(game)
     if self.lane_index ~= -1 then
         local lane = game.lanes[self.lane_index]
 
@@ -54,30 +67,26 @@ function Entity:update(game)
                 local is_colliding = self:check_collision(entity)
 
                 if is_colliding then
-                    self.colliding_entity_id = entity.id
-                    break
+                    return entity.id
                 end
             end
         end
     end
 
-    -- Moves the entity if not colliding.
-    if self.colliding_entity_id == -1 then
-        self.attack_timer = 0
+    return -1
+end
 
-        if self.tag == CONTROLLER_TAG.PLAYER then
-            self.x = self.x + self.speed
-        else
-            self.x = self.x - self.speed
-        end
-    else
-        -- Attacks entity if colliding.
+function Entity:check_and_do_attacks(game, dt)
+    -- Attacks if colliding with opposing entity.
+    self.colliding_entity_id = self:get_colliding_entity_id(game)
+
+    if self.colliding_entity_id ~= -1 then
         local colliding_entity = game.entities[self.colliding_entity_id]
 
         if colliding_entity.tag ~= self.tag then
-            self.attack_timer = self.attack_timer + love.timer.getAverageDelta()
+            self.attack_timer = self.attack_timer + dt
 
-            if self.attack_timer > 1 then
+            if self.attack_timer >= 1 then
                 colliding_entity:take_damage(self.damage)
                 self.attack_timer = 0
             end

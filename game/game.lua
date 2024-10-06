@@ -54,7 +54,7 @@ function Game:draw()
         love.graphics.rectangle("fill", entity.x, entity.y + health_bar_margin_y, entity_width * (entity.hp / entity.max_hp), 4)
 
         -- Draw health text.
-        local health_text = entity.hp .. "/" .. entity.max_hp
+        local health_text = string.format("%.2f", entity.attack_timer) -- entity.hp .. "/" .. entity.max_hp
         local health_text_width = FONT:getWidth(health_text)
 
         love.graphics.setColor(1, 1, 1)
@@ -63,8 +63,16 @@ function Game:draw()
 end
 
 function Game:update()
+    local dt = love.timer.getAverageDelta()
+
+    -- Update entities (movement and collision information).
     for _, entity in pairs(self.entities) do
         entity:update(self)
+    end
+
+    -- Check and do attacks.
+    for _, entity in pairs(self.entities) do
+        entity:check_and_do_attacks(self, dt)
     end
 
     self:remove_dead_entities()
@@ -74,6 +82,8 @@ function Game:update()
 end
 
 function Game:remove_dead_entities()
+    local entities_ids_to_remove = {}
+
     for entity_id, entity in pairs(self.entities) do
         if entity.hp == 0 then
             -- Adds gold if the entity destroyed was an enemy.
@@ -83,8 +93,12 @@ function Game:remove_dead_entities()
                 self.enemy_controller.gold = self.enemy_controller.gold + entity.cost
             end
 
-            self:remove_entity(entity_id)
+            entities_ids_to_remove[#entities_ids_to_remove + 1] = entity_id
         end
+    end
+
+    for i = 1, #entities_ids_to_remove do
+        self:remove_entity(entities_ids_to_remove[i])
     end
 end
 
