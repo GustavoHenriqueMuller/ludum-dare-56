@@ -8,32 +8,41 @@ Snail.database.hp = 21
 Snail.database.damage = 1
 Snail.database.base_damage = 6
 Snail.database.cost = 22
+Snail.database.attack_type = ATTACK_TYPE.MELEE
+Snail.database.attack_range = 0
 Snail.database.description = string.format(
     "Snail" ..
     "\n\nThe snail is a slow, tanky creature that deals low combat damage but high damage against the enemy base." ..
     "\n\nDamage: %d" ..
     "\nBase Damage: %d" ..
     "\nHP: %d" ..
-    "\nSpeed: %.2f",
+    "\nSpeed: %.2f" ..
+    "\nAttack type: %s",
 
     Snail.database.damage,
     Snail.database.base_damage,
     Snail.database.hp,
-    Snail.database.speed
+    Snail.database.speed,
+    Snail.database.attack_type
 )
 
 function Snail:init(x, y, lane_index, controller_tag)
     self:base_init(
         SPRITES.snail,
-        x,
-        y,
+        SPRITES.poison_ball,
+
         Snail.database.speed,
         Snail.database.hp,
         Snail.database.damage,
         Snail.database.base_damage,
+        Snail.database.attack_type,
+        Snail.database.attack_range,
+        Snail.database.cost,
+
+        x,
+        y,
         lane_index,
-        controller_tag,
-        Snail.database.cost
+        controller_tag
     )
 end
 

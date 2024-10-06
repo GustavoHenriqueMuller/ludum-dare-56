@@ -7,6 +7,8 @@ Scorpion.database.speed = 2
 Scorpion.database.hp = 6
 Scorpion.database.damage = 2
 Scorpion.database.base_damage = 2
+Scorpion.database.attack_type = ATTACK_TYPE.RANGED
+Scorpion.database.attack_range = 100
 Scorpion.database.cost = 18
 Scorpion.database.description = string.format(
     "Scorpion" ..
@@ -14,26 +16,34 @@ Scorpion.database.description = string.format(
     "\n\nDamage: %d" ..
     "\nBase Damage: %d" ..
     "\nHP: %d" ..
-    "\nSpeed: %.2f",
+    "\nSpeed: %.2f" ..
+    "\nAttack type: %s (range: %d)",
 
     Scorpion.database.damage,
     Scorpion.database.base_damage,
     Scorpion.database.hp,
-    Scorpion.database.speed
+    Scorpion.database.speed,
+    Scorpion.database.attack_type,
+    Scorpion.database.attack_range
 )
 
 function Scorpion:init(x, y, lane_index, controller_tag)
     self:base_init(
         SPRITES.scorpion,
-        x,
-        y,
+        nil,
+
         Scorpion.database.speed,
         Scorpion.database.hp,
         Scorpion.database.damage,
         Scorpion.database.base_damage,
+        Scorpion.database.attack_type,
+        Scorpion.database.attack_range,
+        Scorpion.database.cost,
+
+        x,
+        y,
         lane_index,
-        controller_tag,
-        Scorpion.database.cost
+        controller_tag
     )
 end
 

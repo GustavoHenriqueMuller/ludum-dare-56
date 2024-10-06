@@ -110,15 +110,20 @@ function Game:load_bases()
     -- Spawn player base.
     self.player_base = self:add_entity(Entity(
         SPRITES.base,
-        base_margin_x,
-        base_margin_y,
+        nil,
+
         0,
         base_hp,
         0,
         0,
+        nil,
+        0,
+        0,
+
+        base_margin_x,
+        base_margin_y,
         -1,
-        CONTROLLER_TAG.PLAYER,
-        0
+        CONTROLLER_TAG.PLAYER
     ))
 
     -- Spawn enemy base.
@@ -126,15 +131,20 @@ function Game:load_bases()
 
     self.enemy_base = self:add_entity(Entity(
         SPRITES.base,
-        love.graphics.getWidth() - base_width - base_margin_x,
-        base_margin_y,
+        nil,
+
         0,
         base_hp,
         0,
         0,
+        nil,
+        0,
+        0,
+
+        love.graphics.getWidth() - base_width - base_margin_x,
+        base_margin_y,
         -1,
-        CONTROLLER_TAG.ENEMY,
-        0
+        CONTROLLER_TAG.ENEMY
     ))
 end
 

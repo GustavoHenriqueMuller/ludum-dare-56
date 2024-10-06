@@ -1,28 +1,35 @@
 require("class")
 
-CONTROLLER_TAG = {PLAYER = "Player", ENEMY = "ENEMY"}
+CONTROLLER_TAG = {PLAYER = "Player", ENEMY = "Enemy"}
+ATTACK_TYPE = {MELEE = "Melee", RANGED = "Ranged"}
 
 Entity = class()
 Entity.counter = 0
 
-function Entity:init(sprite, x, y, speed, hp, damage, base_damage, lane_index, controller_tag, cost)
-    self:base_init(sprite, x, y, speed, hp, damage, base_damage, lane_index, controller_tag, cost)
+function Entity:init(sprite, ranged_attack_sprite, speed, hp, damage, base_damage, attack_type, attack_range, cost, x, y, lane_index, controller_tag)
+    self:base_init(sprite, ranged_attack_sprite, speed, hp, damage, base_damage, attack_type, attack_range, cost, x, y, lane_index, controller_tag)
 end
 
-function Entity:base_init(sprite, x, y, speed, hp, damage, base_damage, lane_index, controller_tag, cost)
+function Entity:base_init(sprite, ranged_attack_sprite, speed, hp, damage, base_damage, attack_type, attack_range, cost, x, y, lane_index, controller_tag)
     self.sprite = sprite
-    self.x = x
-    self.y = y
+    self.ranged_attack_sprite = ranged_attack_sprite
+
     self.speed = speed
     self.hp = hp
     self.max_hp = hp
     self.damage = damage
     self.base_damage = base_damage
+    self.attack_type = attack_type
+    self.attack_range = attack_range
+
+    self.cost = cost
+    self.x = x
+    self.y = y
     self.lane_index = lane_index
     self.tag = controller_tag
-    self.colliding_entity_id = -1
+
+    self.attacking_entity_id = -1
     self.attack_timer = 0
-    self.cost = cost
 
     Entity.counter = Entity.counter + 1
     self.id = Entity.counter
@@ -40,10 +47,10 @@ function Entity:update(game)
     end
 
     -- Stop if colliding with entity in same lane.
-    self.colliding_entity_id = self:get_colliding_entity_id(game)
+    self.attacking_entity_id = self:get_attacking_entity_id(game)
 
     -- Moves the entity if not colliding.
-    if self.colliding_entity_id == -1 then
+    if self.attacking_entity_id == -1 then
         self.attack_timer = 0
 
         if self.tag == CONTROLLER_TAG.PLAYER then
@@ -54,7 +61,7 @@ function Entity:update(game)
     end
 end
 
-function Entity:get_colliding_entity_id(game)
+function Entity:get_attacking_entity_id(game)
     if self.lane_index ~= -1 then
         local lane = game.lanes[self.lane_index]
 
@@ -78,10 +85,10 @@ end
 
 function Entity:check_and_do_attacks(game, dt)
     -- Attacks if colliding with opposing entity.
-    self.colliding_entity_id = self:get_colliding_entity_id(game)
+    self.attacking_entity_id = self:get_attacking_entity_id(game)
 
-    if self.colliding_entity_id ~= -1 then
-        local colliding_entity = game.entities[self.colliding_entity_id]
+    if self.attacking_entity_id ~= -1 then
+        local colliding_entity = game.entities[self.attacking_entity_id]
 
         if colliding_entity.tag ~= self.tag then
             self.attack_timer = self.attack_timer + dt
