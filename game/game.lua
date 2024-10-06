@@ -54,7 +54,7 @@ function Game:draw()
         love.graphics.rectangle("fill", entity.x, entity.y + health_bar_margin_y, entity_width * (entity.hp / entity.max_hp), 4)
 
         -- Draw health text.
-        local health_text = string.format("%.2f", entity.attack_timer) -- entity.hp .. "/" .. entity.max_hp
+        local health_text = entity.hp .. "/" .. entity.max_hp
         local health_text_width = FONT:getWidth(health_text)
 
         love.graphics.setColor(1, 1, 1)
