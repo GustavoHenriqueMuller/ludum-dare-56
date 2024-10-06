@@ -23,8 +23,6 @@ function love.load()
     Sprite("scorpion_portrait")
 
     Sprite("poison_ball")
-    Sprite("execute")
-
     Sprite("lane_spawn")
 
     Sprite("base")
