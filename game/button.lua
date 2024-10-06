@@ -2,11 +2,14 @@ require("class")
 
 Button = class()
 
-function Button:init(sprite, x, y)
+function Button:init(sprite, x, y, opacity)
     self.sprite = sprite
-    self.pressed = false
     self.x = x
     self.y = y
+    self.opacity = opacity or 1
+
+    self.pressed = false
+    self.is_enabled = true
 end
 
 function Button:contains_mouse()
@@ -23,12 +26,22 @@ function Button:set_pressed(pressed)
 end
 
 function Button:draw()
+    love.graphics.setColor(1, 1, 1, self.opacity)
     love.graphics.draw(self.sprite.image, self.x, self.y)
 
-    if self.pressed == true then
-        love.graphics.setColor(0, 0, 0, 0.5)
-
-        local sprite_width, sprite_height = self.sprite.image:getDimensions()
-        love.graphics.rectangle("fill", self.x, self.y, sprite_width, sprite_height)
+    if not self.is_enabled then
+        love.graphics.setColor(1, 0, 0, 0.4)
+        love.graphics.draw(self.sprite.image, self.x, self.y)
     end
+
+    if self.pressed then
+        love.graphics.setColor(0, 0, 0, 0.5)
+        love.graphics.draw(self.sprite.image, self.x, self.y)
+    end
+end
+
+function Button:update(game)
+end
+
+function Button:on_click(game)
 end

@@ -16,25 +16,33 @@ function Game:init()
 end
 
 function Game:draw()
-    -- Draw lanes, if on spawning mode.
-    love.graphics.setColor(1, 1, 1, 0.5)
+    -- Draw background.
+    local background_sprite = SPRITES["background"]
+    local _, background_height = background_sprite.image:getDimensions()
 
-    if UI.mode == UI_MODE.SPAWNING then
-        for i = 1, #GAME.lanes do
-            love.graphics.draw(GAME.lanes[i].sprite.image, GAME.lanes[i].start_player_x, GAME.lanes[i].start_player_y)
-        end
-    end
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.draw(background_sprite.image, 0, love.graphics:getHeight() - background_height)
 
     -- Draw bases.
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(GAME.player_base.sprite.image, GAME.player_base.x, GAME.player_base.y)
     love.graphics.draw(GAME.enemy_base.sprite.image, GAME.enemy_base.x, GAME.enemy_base.y)
 
-    -- Draw entities.
+    -- Draw entities/shadows.
     for _, entity in pairs(GAME.entities) do
         love.graphics.setColor(1, 1, 1)
-        love.graphics.draw(entity.sprite.image, entity.x, entity.y)
 
+        -- Draw shadow.
+        if entity.lane_index ~= -1 then
+            love.graphics.draw(SPRITES["shadow"].image, entity.x, entity.y)
+        end
+
+        -- Draw entity.
+        love.graphics.draw(entity.sprite.image, entity.x, entity.y)
+    end
+
+    -- Draw health bars/texts.
+    for _, entity in pairs(GAME.entities) do
         -- Draw health bar.
         local entity_width = entity.sprite.image:getDimensions()
         local health_bar_margin_y = 5
@@ -44,6 +52,13 @@ function Game:draw()
 
         love.graphics.setColor(1, 0, 0)
         love.graphics.rectangle("fill", entity.x, entity.y + health_bar_margin_y, entity_width * (entity.hp / entity.max_hp), 4)
+
+        -- Draw health text.
+        local health_text = entity.hp .. "/" .. entity.max_hp
+        local health_text_width = FONT:getWidth(health_text)
+
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.print(health_text, entity.x + entity_width / 2 - health_text_width / 2, entity.y - 15)
     end
 end
 
@@ -102,8 +117,6 @@ end
 function Game:remove_entity(entity_id)
     local lane_index = self.entities[entity_id].lane_index
 
-    print(entity_id)
-
     if lane_index ~= -1 then
         self.lanes[lane_index].entities_ids[entity_id] = nil
     end
@@ -113,14 +126,11 @@ end
 
 function Game:load_lanes()
     local lane_spawn_x = 225
-    local lane_spawn_y = 168
+    local lane_spawn_y = 240
 
-    for _ = 1, 6 do
+    for _ = 1, 5 do
         local lane = Lane(lane_spawn_x, lane_spawn_y, love.graphics.getWidth() - lane_spawn_x - 64, lane_spawn_y)
         self.lanes[#self.lanes + 1] = lane
-
-        local button_lane = Button(SPRITES.lane_spawn, lane_spawn_x, lane_spawn_y)
-        UI.button_spawn_lanes[#UI.button_spawn_lanes + 1] = button_lane
 
         lane_spawn_y = lane_spawn_y + 72
     end

@@ -13,62 +13,38 @@ function love.load()
 
     -- Load sprites.
     Sprite("ant")
+    Sprite("fire_ant")
+
     Sprite("ant_portrait")
 
-    Sprite("ant_enemy")
     Sprite("lane_spawn")
 
     Sprite("player_base")
     Sprite("enemy_base")
-
-    -- Load UI.
-    UI = UI()
+    Sprite("background")
+    Sprite("shadow")
 
     -- Load game.
     GAME = Game()
+
+    -- Load UI.
+    UI = UI(GAME)
 end
 
 function love.draw()
-    UI:draw(GAME)
     GAME:draw()
+    UI:draw(GAME)
 end
 
 function love.update()
     GAME:update()
+    UI:update(GAME)
 end
 
-function love.mousepressed(x, y, button, istouch)
-    if UI.mode == UI_MODE.NORMAL then
-        for i = 1, #UI.button_entities do
-            if UI.button_entities[i]:contains_mouse() then
-                UI:select_entity(i)
-            end
-        end
-
-    elseif UI.mode == UI_MODE.SPAWNING then
-        for i = 1, #UI.button_spawn_lanes do
-            if UI.button_spawn_lanes[i]:contains_mouse() then
-                GAME:add_entity(Entity(
-                    SPRITES.ant,
-                    GAME.lanes[i].start_player_x,
-                    GAME.lanes[i].start_player_y,
-                    20,
-                    3,
-                    1,
-                    i,
-                    CONTROLLER_TAG.PLAYER
-                ))
-            end
-        end
-
-        UI:deselect_entity()
-    end
+function love.mousepressed(_, _, _, _)
+    UI:mouse_pressed(GAME)
 end
 
-function love.keypressed(key, scancode)
-    if key == "escape" then
-        love.event.quit()
-    elseif key == '1' then
-        UI:select_entity(1)
-    end
+function love.keypressed(key, _)
+    UI:key_pressed(GAME, key)
 end
