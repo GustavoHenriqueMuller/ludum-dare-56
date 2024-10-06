@@ -24,7 +24,7 @@ function UI:load_buttons(game)
     self.button_entities = {}
 
     -- Create entity buy buttons.
-    local button_buy_entity_x = 150
+    local button_buy_entity_x = 160
     local button_buy_entity_y = 4
 
     for i = 1, #UI_BUTTON_ENTITIES do
@@ -114,9 +114,9 @@ function UI:draw(game)
         end
     end
 
-    -- Draw "Tiny Creatures" text.
+    -- Draw "Age of Tiny Creatures" text.
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("Tiny creatures", 4, UI_HEIGHT / 2 - FONT_HEIGHT, 150, "center")
+    love.graphics.printf("Age of Tiny creatures", 4, UI_HEIGHT / 2 - FONT_HEIGHT, 150, "center")
 
     -- Draw time text.
     love.graphics.setColor(0.5, 0.5, 0.5)

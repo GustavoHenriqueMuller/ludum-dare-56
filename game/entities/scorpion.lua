@@ -4,7 +4,7 @@ require("projectiles.poison_ball")
 
 Scorpion = Entity:extend()
 Scorpion.database = {}
-Scorpion.database.speed = 0.4
+Scorpion.database.speed = 0.8
 Scorpion.database.hp = 6
 Scorpion.database.damage = 2
 Scorpion.database.base_damage = 2
