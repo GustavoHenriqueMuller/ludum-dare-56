@@ -1,7 +1,6 @@
 require("class")
 require("controller")
 require("entities.ant")
-require("entities.fire_ant")
 
 EnemyController = Controller:extend()
 

@@ -6,7 +6,7 @@ Ant.database = {}
 Ant.database.speed = 1.5
 Ant.database.hp = 9
 Ant.database.damage = 3
-Ant.database.base_damage = 3
+Ant.database.base_damage = 2
 Ant.database.cost = 12
 Ant.database.description = string.format("" ..
     "Ant" ..

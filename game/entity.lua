@@ -21,7 +21,7 @@ function Entity:base_init(sprite, x, y, speed, hp, damage, base_damage, lane_ind
     self.lane_index = lane_index
     self.tag = controller_tag
     self.colliding_entity_id = -1
-    self.attack_timerr = 0
+    self.attack_timer = 0
     self.cost = cost
 
     Entity.counter = Entity.counter + 1
@@ -32,11 +32,11 @@ function Entity:update(game)
     -- Destroy self on collision with base.
     if self.tag == CONTROLLER_TAG.PLAYER and self:check_collision(game.enemy_base) then
         game:remove_entity(self.id)
-        game.enemy_base:take_damage(game, self.base_damage)
+        game.enemy_base:take_damage(self.base_damage)
 
     elseif self.tag == CONTROLLER_TAG.ENEMY and self:check_collision(game.player_base) then
         game:remove_entity(self.id)
-        game.player_base:take_damage(game, self.base_damage)
+        game.player_base:take_damage(self.base_damage)
     end
 
     -- Stop if colliding with entity in same lane.
@@ -78,27 +78,15 @@ function Entity:update(game)
             self.attack_timer = self.attack_timer + love.timer.getAverageDelta()
 
             if self.attack_timer > 1 then
-                colliding_entity:take_damage(game, self.damage)
-
+                colliding_entity:take_damage(self.damage)
                 self.attack_timer = 0
             end
         end
     end
 end
 
-function Entity:take_damage(game, amount)
+function Entity:take_damage(amount)
     self.hp = math.max(0, self.hp - amount)
-
-    if self.hp == 0 then
-        -- Adds gold if the entity destroyed was an enemy.
-        if self.tag == CONTROLLER_TAG.ENEMY then
-            game.player_controller.gold = game.player_controller.gold + self.cost
-        else
-            game.enemy_controller.gold = game.enemy_controller.gold + self.cost / 2
-        end
-
-        game:remove_entity(self.id)
-    end
 end
 
 function Entity:check_collision(other)

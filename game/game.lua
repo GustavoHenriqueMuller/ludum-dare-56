@@ -67,12 +67,29 @@ function Game:update()
         entity:update(self)
     end
 
+    self:remove_dead_entities()
+
     self.player_controller:update()
     self.enemy_controller:update(self)
 end
 
+function Game:remove_dead_entities()
+    for entity_id, entity in pairs(self.entities) do
+        if entity.hp == 0 then
+            -- Adds gold if the entity destroyed was an enemy.
+            if entity.tag == CONTROLLER_TAG.ENEMY then
+                self.player_controller.gold = self.player_controller.gold + entity.cost
+            else
+                self.enemy_controller.gold = self.enemy_controller.gold + entity.cost
+            end
+
+            self:remove_entity(entity_id)
+        end
+    end
+end
+
 function Game:load_bases()
-    local base_hp = 25
+    local base_hp = 35
     local base_margin_x = 10
     local base_margin_y = 175
 
