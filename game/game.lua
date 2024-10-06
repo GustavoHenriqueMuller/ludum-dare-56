@@ -23,11 +23,6 @@ function Game:draw()
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(background_sprite.image, 0, love.graphics:getHeight() - background_height)
 
-    -- Draw bases.
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.draw(GAME.player_base.sprite.image, GAME.player_base.x, GAME.player_base.y)
-    love.graphics.draw(GAME.enemy_base.sprite.image, GAME.enemy_base.x, GAME.enemy_base.y)
-
     -- Draw entities/shadows.
     for _, entity in pairs(GAME.entities) do
         love.graphics.setColor(1, 1, 1)
@@ -38,7 +33,12 @@ function Game:draw()
         end
 
         -- Draw entity.
-        love.graphics.draw(entity.sprite.image, entity.x, entity.y)
+        if entity.tag == CONTROLLER_TAG.PLAYER then
+            love.graphics.draw(entity.sprite.image, entity.x, entity.y)
+        else
+            local entity_width = entity.sprite.image:getDimensions()
+            love.graphics.draw(entity.sprite.image, entity.x, entity.y, 0, -1, 1, entity_width)
+        end
     end
 
     -- Draw health bars/texts.
@@ -72,34 +72,38 @@ function Game:update()
 end
 
 function Game:load_bases()
-    local base_hp = 100
+    local base_hp = 25
     local base_margin_x = 10
     local base_margin_y = 175
 
     -- Spawn player base.
     self.player_base = self:add_entity(Entity(
-        SPRITES.player_base,
+        SPRITES.base,
         base_margin_x,
         base_margin_y,
         0,
         base_hp,
         0,
+        0,
         -1,
-        CONTROLLER_TAG.PLAYER
+        CONTROLLER_TAG.PLAYER,
+        0
     ))
 
     -- Spawn enemy base.
-    local enemy_base_width = SPRITES.enemy_base.image:getDimensions()
+    local base_width = SPRITES.base.image:getDimensions()
 
     self.enemy_base = self:add_entity(Entity(
-        SPRITES.enemy_base,
-        love.graphics.getWidth() - enemy_base_width - base_margin_x,
+        SPRITES.base,
+        love.graphics.getWidth() - base_width - base_margin_x,
         base_margin_y,
         0,
         base_hp,
         0,
+        0,
         -1,
-        CONTROLLER_TAG.ENEMY
+        CONTROLLER_TAG.ENEMY,
+        0
     ))
 end
 

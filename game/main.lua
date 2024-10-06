@@ -5,6 +5,8 @@ require("game")
 require("ui")
 
 function love.load()
+    FONT:setFilter("nearest", "nearest")
+
     love.graphics.setBackgroundColor(1, 1, 1)
     love.graphics.setFont(FONT)
     love.graphics.setDefaultFilter("nearest", "nearest")
@@ -13,14 +15,16 @@ function love.load()
 
     -- Load sprites.
     Sprite("ant")
+    Sprite("snail")
     Sprite("fire_ant")
 
     Sprite("ant_portrait")
+    Sprite("snail_portrait")
+    Sprite("execute")
 
     Sprite("lane_spawn")
 
-    Sprite("player_base")
-    Sprite("enemy_base")
+    Sprite("base")
     Sprite("background")
     Sprite("shadow")
 

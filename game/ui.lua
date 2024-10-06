@@ -1,10 +1,14 @@
 require("class")
+require("entities.ant")
+require("entities.snail")
 
-FONT_HEIGHT = 20
+FONT_HEIGHT = 22
 FONT = love.graphics.newFont("assets/04B_03__.ttf", FONT_HEIGHT)
 
 UI_MODE = {NORMAL = "Normal", SPAWNING = "Spawning"}
-UI_BUTTON_ENTITIES = {Ant}
+UI_BUTTON_ENTITIES = {Ant, Snail}
+UI_BUTTON_ACTIONS = {Ant, Snail}
+UI_HEIGHT = 75
 
 UI = class()
 
@@ -19,19 +23,49 @@ function UI:load_buttons(game)
     self.button_entities = {}
 
     -- Create entity buy buttons.
+    local button_buy_entity_x = 150
+    local button_buy_entity_y = 4
+
     for i = 1, #UI_BUTTON_ENTITIES do
         local entity = UI_BUTTON_ENTITIES[i]
-        local button_spawn_entity = Button(entity:get_portrait_sprite(), 4, 4)
+        local button_buy_entity = Button(entity:get_portrait_sprite(), button_buy_entity_x, button_buy_entity_y)
 
-        button_spawn_entity.update = function(self, game)
+        button_buy_entity.update = function(self, game)
             self.is_enabled = game.player_controller:can_buy_entity(entity)
         end
 
-        button_spawn_entity.on_click = function(self, game)
+        button_buy_entity.draw = function(self)
+            self:base_draw()
+
+            -- Draw the description box/text.
+            if self:contains_mouse() then
+                local button_width, button_height = self.sprite.image:getDimensions()
+
+                local description_box_width, description_box_height = 400, 300
+                local description_box_x, description_box_y = self.x + button_width / 2, self.y + button_height / 2
+                local margin = 8
+
+                -- Draw box underneath.
+                love.graphics.setColor(0, 0, 0)
+                love.graphics.rectangle("fill", description_box_x, description_box_y, description_box_width, description_box_height)
+
+                -- Draw border.
+                love.graphics.setColor(1, 1, 1)
+                love.graphics.rectangle("line", description_box_x, description_box_y, description_box_width, description_box_height)
+
+                -- Draw text on top with margin.
+                love.graphics.setColor(1, 1, 1)
+                love.graphics.printf(UI_BUTTON_ENTITIES[i].database.description, description_box_x + margin, description_box_y + margin, description_box_width - margin * 2)
+            end
+        end
+
+        button_buy_entity.on_click = function(self, game)
             game.player_controller:buy_entity(entity)
         end
 
-        self.button_entities[#self.button_entities + 1] = button_spawn_entity
+        self.button_entities[#self.button_entities + 1] = button_buy_entity
+
+        button_buy_entity_x = button_buy_entity_x + 64
     end
 
     -- Create lane buttons.
@@ -63,19 +97,16 @@ function UI:load_buttons(game)
 
         self.spawn_buttons[#self.spawn_buttons + 1] = spawn_button
     end
+
+    -- Create action buttons. @TODO
+    self.action_buttons = {}
 end
 
 function UI:draw(game)
-    local ui_height = 56
     love.graphics.setColor(0, 0, 0)
-    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), ui_height)
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), UI_HEIGHT)
 
     love.graphics.setColor(1, 1, 1)
-
-    -- Draw buttons.
-    for i = 1, #UI.button_entities do
-        UI.button_entities[i]:draw()
-    end
 
     -- Draw lane buttons, if on spawning mode.
     love.graphics.setColor(1, 1, 1, 0.5)
@@ -86,6 +117,10 @@ function UI:draw(game)
             spawn_button:draw()
         end
     end
+
+    -- Draw "Tiny Creatures" text.
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.printf("Tiny creatures", 4, UI_HEIGHT / 2 - FONT_HEIGHT, 150, "center")
 
     -- Draw time text.
     love.graphics.setColor(0.5, 0.5, 0.5)
@@ -103,7 +138,23 @@ function UI:draw(game)
 
     local gold_text = "Gold: $" .. game.player_controller.gold
     local gold_text_width = FONT:getWidth(gold_text)
-    love.graphics.print(gold_text, love.graphics.getWidth() - gold_text_width - 6 - 150, 8)
+    love.graphics.print(gold_text, love.graphics.getWidth() - gold_text_width - 6 - 200, 8)
+
+    -- Draw gold text per each button entity.
+    for i = 1, #self.button_entities do
+        local button_entity = self.button_entities[i]
+        local button_entity_width, button_entity_height = button_entity.sprite.image:getDimensions()
+
+        local entity_cost_text = "$" .. UI_BUTTON_ENTITIES[i].database.cost
+        local entity_cost_text_width = FONT:getWidth(entity_cost_text)
+
+        love.graphics.print(entity_cost_text, button_entity.x + button_entity_width / 2 - entity_cost_text_width / 2, button_entity.y + button_entity_height)
+    end
+
+    -- Draw buttons in reverse order.
+    for i = #UI.button_entities, 1, -1 do
+        UI.button_entities[i]:draw()
+    end
 end
 
 function UI:update(game)
@@ -164,5 +215,7 @@ function UI:key_pressed(game, key)
         love.event.quit()
     elseif key == '1' then
         UI:select_entity(game, 1)
+    elseif key == '2' then
+        UI:select_entity(game, 2)
     end
 end

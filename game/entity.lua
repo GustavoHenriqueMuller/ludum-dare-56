@@ -5,11 +5,11 @@ CONTROLLER_TAG = {PLAYER = "Player", ENEMY = "ENEMY"}
 Entity = class()
 Entity.counter = 0
 
-function Entity:init(sprite, x, y, speed, hp, damage, lane_index, controller_tag)
-    self:initialize(sprite, x, y, speed, hp, damage, lane_index, controller_tag)
+function Entity:init(sprite, x, y, speed, hp, damage, base_damage, lane_index, controller_tag, cost)
+    self:base_init(sprite, x, y, speed, hp, damage, base_damage, lane_index, controller_tag, cost)
 end
 
-function Entity:initialize(sprite, x, y, speed, hp, damage, lane_index, controller_tag)
+function Entity:base_init(sprite, x, y, speed, hp, damage, base_damage, lane_index, controller_tag, cost)
     self.sprite = sprite
     self.x = x
     self.y = y
@@ -17,10 +17,12 @@ function Entity:initialize(sprite, x, y, speed, hp, damage, lane_index, controll
     self.hp = hp
     self.max_hp = hp
     self.damage = damage
+    self.base_damage = base_damage
     self.lane_index = lane_index
     self.tag = controller_tag
     self.colliding_entity_id = -1
-    self.attack_timer = 0
+    self.attack_timerr = 0
+    self.cost = cost
 
     Entity.counter = Entity.counter + 1
     self.id = Entity.counter
@@ -30,11 +32,11 @@ function Entity:update(game)
     -- Destroy self on collision with base.
     if self.tag == CONTROLLER_TAG.PLAYER and self:check_collision(game.enemy_base) then
         game:remove_entity(self.id)
-        game.enemy_base:take_damage(game, self.damage)
+        game.enemy_base:take_damage(game, self.base_damage)
 
     elseif self.tag == CONTROLLER_TAG.ENEMY and self:check_collision(game.player_base) then
         game:remove_entity(self.id)
-        game.player_base:take_damage(game, self.damage)
+        game.player_base:take_damage(game, self.base_damage)
     end
 
     -- Stop if colliding with entity in same lane.
@@ -88,6 +90,13 @@ function Entity:take_damage(game, amount)
     self.hp = math.max(0, self.hp - amount)
 
     if self.hp == 0 then
+        -- Adds gold if the entity destroyed was an enemy.
+        if self.tag == CONTROLLER_TAG.ENEMY then
+            game.player_controller.gold = game.player_controller.gold + self.cost
+        else
+            game.enemy_controller.gold = game.enemy_controller.gold + self.cost / 2
+        end
+
         game:remove_entity(self.id)
     end
 end

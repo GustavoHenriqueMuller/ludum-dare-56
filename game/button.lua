@@ -26,6 +26,10 @@ function Button:set_pressed(pressed)
 end
 
 function Button:draw()
+    self:base_draw()
+end
+
+function Button:base_draw()
     love.graphics.setColor(1, 1, 1, self.opacity)
     love.graphics.draw(self.sprite.image, self.x, self.y)
 
