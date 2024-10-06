@@ -16,9 +16,13 @@ function love.load()
     -- Load sprites.
     Sprite("ant")
     Sprite("snail")
+    Sprite("scorpion")
 
     Sprite("ant_portrait")
     Sprite("snail_portrait")
+    Sprite("scorpion_portrait")
+
+    Sprite("poison_ball")
     Sprite("execute")
 
     Sprite("lane_spawn")

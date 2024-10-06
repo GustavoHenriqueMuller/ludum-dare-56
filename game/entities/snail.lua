@@ -8,7 +8,7 @@ Snail.database.hp = 21
 Snail.database.damage = 1
 Snail.database.base_damage = 6
 Snail.database.cost = 22
-Snail.database.description = string.format("" ..
+Snail.database.description = string.format(
     "Snail" ..
     "\n\nThe snail is a slow, tanky creature that deals low combat damage but high damage against the enemy base." ..
     "\n\nDamage: %d" ..

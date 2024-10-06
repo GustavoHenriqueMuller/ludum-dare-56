@@ -8,7 +8,7 @@ Ant.database.hp = 9
 Ant.database.damage = 3
 Ant.database.base_damage = 2
 Ant.database.cost = 12
-Ant.database.description = string.format("" ..
+Ant.database.description = string.format(
     "Ant" ..
     "\n\nThe ant is a cheap all-rounder, ideal for tanking the frontlines." ..
     "\n\nDamage: %d" ..

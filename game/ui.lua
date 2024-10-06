@@ -1,13 +1,13 @@
 require("class")
 require("entities.ant")
 require("entities.snail")
+require("entities.scorpion")
 
 FONT_HEIGHT = 22
 FONT = love.graphics.newFont("assets/04B_03__.ttf", FONT_HEIGHT)
 
 UI_MODE = {NORMAL = "Normal", SPAWNING = "Spawning"}
-UI_BUTTON_ENTITIES = {Ant, Snail}
-UI_BUTTON_ACTIONS = {Ant, Snail}
+UI_BUTTON_ENTITIES = {Ant, Snail, Scorpion}
 UI_HEIGHT = 75
 
 UI = class()
@@ -97,9 +97,6 @@ function UI:load_buttons(game)
 
         self.spawn_buttons[#self.spawn_buttons + 1] = spawn_button
     end
-
-    -- Create action buttons. @TODO
-    self.action_buttons = {}
 end
 
 function UI:draw(game)
