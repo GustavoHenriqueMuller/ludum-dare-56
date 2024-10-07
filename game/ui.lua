@@ -10,6 +10,9 @@ FONT = love.graphics.newFont("assets/04B_03__.ttf", FONT_HEIGHT)
 SMALL_FONT_HEIGHT = 16
 SMALL_FONT = love.graphics.newFont("assets/04B_03__.ttf", SMALL_FONT_HEIGHT)
 
+HUGE_FONT_HEIGHT = 125
+HUGE_FONT = love.graphics.newFont("assets/04B_03__.ttf", HUGE_FONT_HEIGHT)
+
 UI_MODE = {NORMAL = "Normal", SPAWNING = "Spawning"}
 UI_BUTTON_ENTITIES = {Ant, Scorpion, Snail, Frog}
 UI_HEIGHT = 75
@@ -157,6 +160,37 @@ function UI:draw(game)
     for i = #self.button_entities, 1, -1 do
         self.button_entities[i]:draw()
     end
+
+    -- Draw victory/defeat/draw screen.
+    if game.state ~= GAME_STATE.PLAYING then
+        love.graphics.setColor(0, 0, 0, 0.5)
+        love.graphics.rectangle("fill", 0, UI_HEIGHT, love.graphics:getWidth(), love.graphics:getHeight() - UI_HEIGHT)
+
+        local state_text = game.state .. "!"
+        local state_text_width = HUGE_FONT:getWidth(state_text)
+
+        -- Determine color.
+        if game.state == GAME_STATE.VICTORY then
+            love.graphics.setColor(0.514, 1, 0.353)
+        end
+
+        if game.state == GAME_STATE.DEFEAT then
+            love.graphics.setColor(1, 0.353, 0.353)
+        end
+
+        if game.state == GAME_STATE.DRAW then
+            love.graphics.setColor(1, 0.902, 0.353)
+        end
+
+        -- Print text.
+        love.graphics.setFont(HUGE_FONT)
+        love.graphics.print(
+            state_text,
+            love.graphics:getWidth() / 2 - state_text_width / 2,
+            love.graphics:getHeight() / 2 - HUGE_FONT_HEIGHT / 2
+        )
+        love.graphics.setFont(FONT)
+    end
 end
 
 function UI:update(game)
@@ -166,6 +200,10 @@ function UI:update(game)
 
     for i = 1, #self.spawn_buttons do
         self.spawn_buttons[i]:update(game)
+    end
+
+    if game.state ~= GAME_STATE.PLAYING then
+        self:deselect_entity()
     end
 end
 
@@ -192,27 +230,29 @@ function UI:deselect_entity()
 end
 
 function UI:mouse_pressed(game)
-    if self.mode == UI_MODE.NORMAL then
-        for i = 1, #self.button_entities do
-            if self.button_entities[i]:contains_mouse() then
-                self:select_entity(game, i)
-            end
-        end
-
-    elseif self.mode == UI_MODE.SPAWNING then
-        for lane_index = 1, #self.spawn_buttons do
-            local spawn_button = self.spawn_buttons[lane_index]
-
-            if spawn_button:contains_mouse() then
-                if spawn_button.is_enabled then
-                    spawn_button:on_click(game)
-                else
-                    return
+    if game.state == GAME_STATE.PLAYING then
+        if self.mode == UI_MODE.NORMAL then
+            for i = 1, #self.button_entities do
+                if self.button_entities[i]:contains_mouse() then
+                    self:select_entity(game, i)
                 end
             end
-        end
 
-        self:deselect_entity()
+        elseif self.mode == UI_MODE.SPAWNING then
+            for lane_index = 1, #self.spawn_buttons do
+                local spawn_button = self.spawn_buttons[lane_index]
+
+                if spawn_button:contains_mouse() then
+                    if spawn_button.is_enabled then
+                        spawn_button:on_click(game)
+                    else
+                        return
+                    end
+                end
+            end
+
+            self:deselect_entity()
+        end
     end
 end
 

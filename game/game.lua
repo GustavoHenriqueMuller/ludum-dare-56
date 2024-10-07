@@ -5,7 +5,9 @@ require("enemy_controller")
 require("utils")
 require("source")
 
+GAME_STATE = {PLAYING = "Playing", VICTORY = "Victory", DEFEAT = "Defeat", DRAW = "DRAW"}
 Game = class()
+Game.state=  GAME_STATE.PLAYING
 
 function Game:init()
     self.entities = {}
@@ -80,31 +82,47 @@ function Game:draw()
 end
 
 function Game:update()
-    -- Play background music.
-    SOURCES.background_music:play()
+    self:update_game_state()
 
-    local dt = love.timer.getAverageDelta()
+    if self.state == GAME_STATE.PLAYING then
+        -- Play background music.
+        SOURCES.background_music:play()
 
-    -- Update entities (movement and collision information).
-    for _, entity in pairs(self.entities) do
-        entity:update(self)
-        Utils.log(entity)
+        local dt = love.timer.getAverageDelta()
+
+        -- Update entities (movement and collision information).
+        for _, entity in pairs(self.entities) do
+            entity:update(self)
+            Utils.log(entity)
+        end
+
+        -- Update projectiles.
+        for _, projectile in pairs(self.projectiles) do
+            projectile:update(self)
+        end
+
+        -- Check and do attacks.
+        for _, entity in pairs(self.entities) do
+            entity:combat(self, dt)
+        end
+
+        self:remove_dead_entities()
+
+        self.player_controller:update()
+        self.enemy_controller:update(self)
     end
+end
 
-    -- Update projectiles.
-    for _, projectile in pairs(self.projectiles) do
-        projectile:update(self)
+function Game:update_game_state()
+    if self.player_base.hp == 0 and self.enemy_base.hp == 0 then
+        self.state = GAME_STATE.DRAW
+    elseif self.player_base.hp == 0 then
+        self.state = GAME_STATE.DEFEAT
+    elseif self.enemy_base.hp == 0 then
+        self.state = GAME_STATE.VICTORY
+    else
+        self.state = GAME_STATE.PLAYING
     end
-
-    -- Check and do attacks.
-    for _, entity in pairs(self.entities) do
-        entity:combat(self, dt)
-    end
-
-    self:remove_dead_entities()
-
-    self.player_controller:update()
-    self.enemy_controller:update(self)
 end
 
 function Game:remove_dead_entities()
