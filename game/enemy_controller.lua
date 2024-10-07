@@ -17,11 +17,20 @@ function EnemyController:update(game)
         -- Spawn random entity in random lane. Else, save gold.
         local lane_index = math.random(1, #game.lanes)
 
-        for i = #UI_BUTTON_ENTITIES, 1, -1 do
-            local entity_class = UI_BUTTON_ENTITIES[i]
+        local roll_2 = math.random(1, 3)
 
-            if self:can_buy_entity(entity_class) then
-                self:buy_entity(game, entity_class, lane_index, CONTROLLER_TAG.ENEMY)
+        if roll_2 > 2 then
+            -- Spawn biggest creature money can buy.
+            for i = #UI_BUTTON_ENTITIES, 1, -1 do
+                local entity_class = UI_BUTTON_ENTITIES[i]
+
+                if self:can_buy_entity(entity_class) then
+                    self:buy_entity(game, entity_class, lane_index, CONTROLLER_TAG.ENEMY)
+                end
+            end
+        else
+            if self:can_buy_entity(Ant) then
+                self:buy_entity(game, Ant, lane_index, CONTROLLER_TAG.ENEMY)
             end
         end
     end

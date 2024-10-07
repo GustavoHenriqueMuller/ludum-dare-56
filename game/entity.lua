@@ -38,13 +38,13 @@ end
 function Entity:update(game)
     -- Destroy self on collision with base.
     if self.tag == CONTROLLER_TAG.PLAYER and self:check_collision(game.enemy_base) then
-        game.player_controller.gold = game.player_controller.gold + math.floor(self.hp / self.maxhp) *  self.cost
+        game.player_controller.gold = game.player_controller.gold + math.floor(self.hp / self.max_hp) *  self.cost
 
         game:remove_entity(self.id)
         game.enemy_base:take_damage(self.base_damage)
 
     elseif self.tag == CONTROLLER_TAG.ENEMY and self:check_collision(game.player_base) then
-        game.enemy_controller.gold = game.enemy_controller.gold + math.floor(self.hp / self.maxhp) * self.cost
+        game.enemy_controller.gold = game.enemy_controller.gold + math.floor(self.hp / self.max_hp) * self.cost
 
         game:remove_entity(self.id)
         game.player_base:take_damage(self.base_damage)

@@ -7,6 +7,7 @@ require("ui")
 
 function love.load()
     FONT:setFilter("nearest", "nearest")
+    SMALL_FONT:setFilter("nearest", "nearest")
 
     love.graphics.setBackgroundColor(1, 1, 1)
     love.graphics.setFont(FONT)
@@ -35,6 +36,7 @@ function love.load()
     -- Load audio sources.
     Source("background_music", 0.03, false)
     Source("hit", 0.3, true)
+    Source("die", 0.3, true)
 
     -- Load game.
     GAME = Game()

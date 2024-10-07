@@ -1,2 +1,3 @@
 background_music: Nebula (music, futuristic) (https://opengameart.org/content/nebula-music-futuristic)
 hit: Short Impact (https://opengameart.org/content/short-impact)
+die: 8 wet squish, slurp impacts (https://opengameart.org/content/8-wet-squish-slurp-impacts)

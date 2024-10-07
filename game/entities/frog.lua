@@ -4,9 +4,9 @@ require("sprite")
 Frog = Entity:extend()
 Frog.database = {}
 Frog.database.speed = 0.6
-Frog.database.hp = 45
-Frog.database.damage = 6
-Frog.database.base_damage = 10
+Frog.database.hp = 450
+Frog.database.damage = 60
+Frog.database.base_damage = 150
 Frog.database.cost = 500
 Frog.database.attack_type = ATTACK_TYPE.MELEE
 Frog.database.attack_range = 0

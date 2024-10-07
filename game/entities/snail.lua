@@ -4,9 +4,9 @@ require("sprite")
 Snail = Entity:extend()
 Snail.database = {}
 Snail.database.speed = 0.8
-Snail.database.hp = 27
-Snail.database.damage = 1
-Snail.database.base_damage = 7
+Snail.database.hp = 270
+Snail.database.damage = 10
+Snail.database.base_damage = 100
 Snail.database.cost = 220
 Snail.database.attack_type = ATTACK_TYPE.MELEE
 Snail.database.attack_range = 0

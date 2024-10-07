@@ -70,10 +70,12 @@ function Game:draw()
 
         -- Draw health text.
         local health_text = entity.hp .. "/" .. entity.max_hp
-        local health_text_width = FONT:getWidth(health_text)
+        local health_text_width = SMALL_FONT:getWidth(health_text)
 
         love.graphics.setColor(1, 1, 1)
-        love.graphics.print(health_text, entity.x + entity.sprite.width / 2 - health_text_width / 2, entity.y - 15)
+        love.graphics.setFont(SMALL_FONT)
+        love.graphics.print(health_text, entity.x + entity.sprite.width / 2 - health_text_width / 2, entity.y - 10)
+        love.graphics.setFont(FONT)
     end
 end
 
@@ -133,7 +135,7 @@ function Game:remove_dead_entities()
 end
 
 function Game:load_bases()
-    local base_hp = 100
+    local base_hp = 1200
     local base_margin_x = 10
     local base_margin_y = 175
 
@@ -195,6 +197,9 @@ function Game:remove_entity(entity_id)
     end
 
     self.entities[entity_id] = nil
+
+    -- Play death sound.
+    SOURCES.die:play()
 end
 
 function Game:add_projectile(projectile)
