@@ -5,7 +5,7 @@ require("entities.Scorpion")
 EnemyController = Controller:extend()
 
 function EnemyController:init()
-    self:base_init(15)
+    self:base_init(25, 6)
 end
 
 function EnemyController:update(game)

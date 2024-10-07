@@ -6,10 +6,10 @@ Scorpion = Entity:extend()
 Scorpion.database = {}
 Scorpion.database.speed = 0.8
 Scorpion.database.hp = 6
-Scorpion.database.damage = 2
+Scorpion.database.damage = 1
 Scorpion.database.base_damage = 2
 Scorpion.database.attack_type = ATTACK_TYPE.RANGED
-Scorpion.database.attack_range = 300
+Scorpion.database.attack_range = 450
 Scorpion.database.cost = 180
 Scorpion.database.description = string.format(
     "Scorpion" ..

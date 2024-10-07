@@ -67,7 +67,7 @@ function UI:load_buttons(game)
         button_buy_entity_x = button_buy_entity_x + 64
     end
 
-    -- Create lane buttons.
+    -- Create spawn buttons.
     self.spawn_buttons = {}
 
     for i = 1, #game.lanes do
@@ -123,18 +123,18 @@ function UI:draw(game)
 
     local time_text = "Time: " .. string.format("%.1f", love.timer.getTime()) .. "s"
     local time_text_width = FONT:getWidth(time_text)
-    love.graphics.print(time_text, love.graphics.getWidth() - time_text_width - 6, 8)
+    love.graphics.print(time_text, love.graphics.getWidth() - time_text_width - 6, 16)
 
     -- Draw UI mode text.
-    local ui_mode_text_width = FONT:getWidth(UI.mode)
-    love.graphics.print(UI.mode, love.graphics.getWidth() - ui_mode_text_width - 6, 8 + FONT_HEIGHT)
+    local ui_mode_text_width = FONT:getWidth(self.mode)
+    love.graphics.print(self.mode, love.graphics.getWidth() - ui_mode_text_width - 6, 16 + FONT_HEIGHT)
 
     -- Draw gold text.
     love.graphics.setColor(0.929, 0.71, 0.169)
 
     local gold_text = "Gold: $" .. game.player_controller.gold
     local gold_text_width = FONT:getWidth(gold_text)
-    love.graphics.print(gold_text, love.graphics.getWidth() - gold_text_width - 6 - 200, 8)
+    love.graphics.print(gold_text, love.graphics.getWidth() - gold_text_width - 6 - 160, 16)
 
     -- Draw gold text per each button entity.
     for i = 1, #self.button_entities do
@@ -151,8 +151,8 @@ function UI:draw(game)
     end
 
     -- Draw buttons in reverse order.
-    for i = #UI.button_entities, 1, -1 do
-        UI.button_entities[i]:draw()
+    for i = #self.button_entities, 1, -1 do
+        self.button_entities[i]:draw()
     end
 end
 
@@ -167,21 +167,25 @@ function UI:update(game)
 end
 
 function UI:select_entity(game, button_entity_index)
+    self:deselect_entity()
+
     local entity = UI_BUTTON_ENTITIES[button_entity_index]
 
     if game.player_controller:can_buy_entity(entity) then
-        UI.entity_index_being_spawned = button_entity_index
-        UI.mode = UI_MODE.SPAWNING
+        self.entity_index_being_spawned = button_entity_index
+        self.mode = UI_MODE.SPAWNING
 
-        UI.button_entities[button_entity_index]:set_pressed(true)
+        self.button_entities[button_entity_index]:set_pressed(true)
     end
 end
 
 function UI:deselect_entity()
-    UI.button_entities[UI.entity_index_being_spawned]:set_pressed(false)
+    if self.entity_index_being_spawned ~= -1 then
+        self.button_entities[self.entity_index_being_spawned]:set_pressed(false)
+    end
 
-    UI.entity_index_being_spawned = -1
-    UI.mode = UI_MODE.NORMAL
+    self.entity_index_being_spawned = -1
+    self.mode = UI_MODE.NORMAL
 end
 
 function UI:mouse_pressed(game)
@@ -213,12 +217,12 @@ function UI:key_pressed(game, key)
     if key == "escape" then
         love.event.quit()
     elseif key == '1' then
-        UI:select_entity(game, 1)
+        self:select_entity(game, 1)
     elseif key == '2' then
-        UI:select_entity(game, 2)
+        self:select_entity(game, 2)
     elseif key == '3' then
-        UI:select_entity(game, 3)
+        self:select_entity(game, 3)
     elseif key == '4' then
-        UI:select_entity(game, 4)
+        self:select_entity(game, 4)
     end
 end

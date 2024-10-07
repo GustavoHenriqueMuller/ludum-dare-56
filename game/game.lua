@@ -3,6 +3,7 @@ require("entity")
 require("player_controller")
 require("enemy_controller")
 require("utils")
+require("source")
 
 Game = class()
 
@@ -77,6 +78,9 @@ function Game:draw()
 end
 
 function Game:update()
+    -- Play background music.
+    SOURCES.background_music:play()
+
     local dt = love.timer.getAverageDelta()
 
     -- Update entities (movement and collision information).

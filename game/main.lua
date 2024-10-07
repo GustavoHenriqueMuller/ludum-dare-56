@@ -1,4 +1,5 @@
 require("sprite")
+require("source")
 require("lane")
 require("button")
 require("game")
@@ -30,6 +31,10 @@ function love.load()
     Sprite("base")
     Sprite("background")
     Sprite("shadow")
+
+    -- Load audio sources.
+    Source("background_music", 0.03, false)
+    Source("hit", 0.3, true)
 
     -- Load game.
     GAME = Game()
