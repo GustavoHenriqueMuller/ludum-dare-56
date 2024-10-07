@@ -15,6 +15,7 @@ function Game:init()
     self.lanes = {}
     self.player_controller = PlayerController()
     self.enemy_controller = EnemyController()
+    self.timer = 0
 
     self:load_bases()
     self:load_lanes()
@@ -85,6 +86,9 @@ function Game:update()
     self:update_game_state()
 
     if self.state == GAME_STATE.PLAYING then
+        -- Update timer.
+        self.timer = love.timer.getTime()
+
         -- Play background music.
         SOURCES.background_music:play()
 
@@ -153,7 +157,7 @@ function Game:remove_dead_entities()
 end
 
 function Game:load_bases()
-    local base_hp = 1200
+    local base_hp = 2000
     local base_margin_x = 10
     local base_margin_y = 175
 

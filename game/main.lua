@@ -8,6 +8,8 @@ require("ui")
 function love.load()
     FONT:setFilter("nearest", "nearest")
     SMALL_FONT:setFilter("nearest", "nearest")
+    BIG_FONT:setFilter("nearest", "nearest")
+    HUGE_FONT:setFilter("nearest", "nearest")
 
     love.graphics.setBackgroundColor(1, 1, 1)
     love.graphics.setFont(FONT)

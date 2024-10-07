@@ -10,6 +10,9 @@ FONT = love.graphics.newFont("assets/04B_03__.ttf", FONT_HEIGHT)
 SMALL_FONT_HEIGHT = 16
 SMALL_FONT = love.graphics.newFont("assets/04B_03__.ttf", SMALL_FONT_HEIGHT)
 
+BIG_FONT_HEIGHT = 26
+BIG_FONT = love.graphics.newFont("assets/04B_03__.ttf", BIG_FONT_HEIGHT)
+
 HUGE_FONT_HEIGHT = 125
 HUGE_FONT = love.graphics.newFont("assets/04B_03__.ttf", HUGE_FONT_HEIGHT)
 
@@ -30,7 +33,7 @@ function UI:load_buttons(game)
     self.button_entities = {}
 
     -- Create entity buy buttons.
-    local button_buy_entity_x = 160
+    local button_buy_entity_x = 6
     local button_buy_entity_y = 4
 
     for i = 1, #UI_BUTTON_ENTITIES do
@@ -105,8 +108,13 @@ function UI:load_buttons(game)
 end
 
 function UI:draw(game)
+    -- Draw menu background.
     love.graphics.setColor(0, 0, 0)
     love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), UI_HEIGHT)
+
+    -- Draw menu outline.
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.rectangle("line", 0, 0, love.graphics.getWidth(), UI_HEIGHT)
 
     love.graphics.setColor(1, 1, 1)
 
@@ -120,14 +128,20 @@ function UI:draw(game)
         end
     end
 
-    -- Draw "Age of Tiny Creatures" text.
+    -- Draw title text.
     love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("Age of Tiny creatures", 4, UI_HEIGHT / 2 - FONT_HEIGHT, 150, "center")
+
+    local title_text = "Age of Tiny Creatures  -  Ludum Dare 56"
+    local title_text_width = BIG_FONT:getWidth(title_text)
+
+    love.graphics.setFont(BIG_FONT)
+    love.graphics.print(title_text, love.graphics:getWidth() / 2 - title_text_width / 2, UI_HEIGHT / 2 - BIG_FONT_HEIGHT / 2)
+    love.graphics.setFont(FONT)
 
     -- Draw time text.
     love.graphics.setColor(0.5, 0.5, 0.5)
 
-    local time_text = "Time: " .. string.format("%.1f", love.timer.getTime()) .. "s"
+    local time_text = "Time: " .. string.format("%.1f", game.timer) .. "s"
     local time_text_width = FONT:getWidth(time_text)
     love.graphics.print(time_text, love.graphics.getWidth() - time_text_width - 6, 16)
 

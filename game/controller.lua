@@ -4,15 +4,16 @@ require("entity")
 Controller = class()
 Controller.MAX_GOLD_MULTIPLIER = 2
 
-function Controller:init(gold, gold_per_tick)
-    self:base_init(gold, gold_per_tick)
+function Controller:init(gold, gold_per_tick, gold_multiplier)
+    self:base_init(gold, gold_per_tick, gold_multiplier)
 end
 
-function Controller:base_init(gold, gold_per_tick)
+function Controller:base_init(gold, gold_per_tick, gold_multiplier)
     self.gold = gold
+    self.gold_per_tick = gold_per_tick
+    self.gold_multiplier = gold_multiplier
+
     self.gold_timer = 0
-    self.gold_multiplier = 1
-    self.gold_per_tick = gold_per_tick or 1
 end
 
 function Controller:update(game)
@@ -23,7 +24,7 @@ function Controller:update_gold()
     local miliseconds_since_last_frame = love.timer.getAverageDelta() * 1000
 
     self.gold_timer = self.gold_timer + miliseconds_since_last_frame
-    self.gold_multiplier = math.min(Controller.MAX_GOLD_MULTIPLIER, self.gold_multiplier + miliseconds_since_last_frame / 600000)
+    self.gold_multiplier = math.min(Controller.MAX_GOLD_MULTIPLIER, self.gold_multiplier + miliseconds_since_last_frame / 300000)
 
     if self.gold_timer > 1000 then
         self.gold = self.gold + math.floor(self.gold_per_tick * self.gold_multiplier)
