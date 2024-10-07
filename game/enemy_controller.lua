@@ -1,6 +1,6 @@
 require("class")
 require("controller")
-require("entities.Scorpion")
+require("entities.scorpion")
 
 EnemyController = Controller:extend()
 
