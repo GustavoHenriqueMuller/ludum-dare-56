@@ -13,7 +13,7 @@ Scorpion.database.attack_range = 450
 Scorpion.database.cost = 180
 Scorpion.database.description = string.format(
     "Scorpion" ..
-    "\n\nThe Scorpion is a very slow moving creature that attacks with poison from a distance." ..
+    "\n\nThe scorpion is a very slow moving creature that attacks with poison from a distance." ..
     "\n\nDamage: %d" ..
     "\nBase Damage: %d" ..
     "\nHP: %d" ..
