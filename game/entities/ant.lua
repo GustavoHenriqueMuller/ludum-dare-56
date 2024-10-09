@@ -3,7 +3,7 @@ require("sprite")
 
 Ant = Entity:extend()
 Ant.database = {}
-Ant.database.speed = 1.1
+Ant.database.speed = 1.05
 Ant.database.hp = 90
 Ant.database.damage = 30
 Ant.database.base_damage = 30
