@@ -66,12 +66,11 @@ function Entity:update(game)
     end
 end
 
-
 function Entity:calculate_colliding_entity_id(game)
     if self.lane_index ~= -1 then
         local lane = game.lanes[self.lane_index]
 
-        for entity_id, _ in pairs(lane.entities_ids) do
+        for entity_id in pairs(lane.entities_ids) do
             local entity = game.entities[entity_id]
             local entity_comes_after = (self.tag == CONTROLLER_TAG.PLAYER and entity.x > self.x) or
                                        (self.tag == CONTROLLER_TAG.ENEMY and entity.x < self.x)
@@ -103,7 +102,7 @@ function Entity:calculate_attacking_entity_id(game)
     if self.attack_type == ATTACK_TYPE.RANGED then
         local lane = game.lanes[self.lane_index]
 
-        for entity_id, _ in pairs(lane.entities_ids) do
+        for entity_id in pairs(lane.entities_ids) do
             local entity = game.entities[entity_id]
             local entity_comes_after = (self.tag == CONTROLLER_TAG.PLAYER and entity.x > self.x) or
                                        (self.tag == CONTROLLER_TAG.ENEMY and entity.x < self.x)

@@ -29,25 +29,36 @@ function Game:draw()
     love.graphics.draw(background_sprite.image, 0, love.graphics:getHeight() - background_sprite.height)
 
     -- Draw entities/shadows.
-    for _, entity in pairs(self.entities) do
-        love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(1, 1, 1)
 
-        -- Draw shadow.
-        if entity.lane_index ~= -1 then
-            love.graphics.draw(
-                SPRITES.shadow.image,
-                entity.x + entity.sprite.width / 2 - SPRITES.shadow.width / 2,
-                entity.y + entity.sprite.height * 0.8 - SPRITES.shadow.height / 2
-            )
-        end
+    for i = 1, #self.lanes do
+        local lane = self.lanes[i]
 
-        -- Draw entity.
-        if entity.tag == CONTROLLER_TAG.PLAYER then
-            love.graphics.draw(entity.sprite.image, entity.x, entity.y)
-        else
-            love.graphics.draw(entity.sprite.image, entity.x, entity.y, 0, -1, 1, entity.sprite.width)
+        -- Draw each entity.
+        for entity_id in pairs(lane.entities_ids) do
+            local entity = self.entities[entity_id]
+
+            -- Draw shadow.
+            if entity.lane_index ~= -1 then
+                love.graphics.draw(
+                    SPRITES.shadow.image,
+                    entity.x + entity.sprite.width / 2 - SPRITES.shadow.width / 2,
+                    entity.y + entity.sprite.height * 0.8 - SPRITES.shadow.height / 2
+                )
+            end
+
+            -- Draw entity.
+            if entity.tag == CONTROLLER_TAG.PLAYER then
+                love.graphics.draw(entity.sprite.image, entity.x, entity.y)
+            else
+                love.graphics.draw(entity.sprite.image, entity.x, entity.y, 0, -1, 1, entity.sprite.width)
+            end
         end
     end
+
+    -- Draw bases.
+    love.graphics.draw(self.player_base.sprite.image, self.player_base.x, self.player_base.y)
+    love.graphics.draw(self.enemy_base.sprite.image, self.enemy_base.x, self.enemy_base.y, 0, -1, 1, self.enemy_base.sprite.width)
 
     -- Draw projectiles.
     for _, projectile in pairs(self.projectiles) do
@@ -97,7 +108,6 @@ function Game:update()
         -- Update entities (movement and collision information).
         for _, entity in pairs(self.entities) do
             entity:update(self)
-            Utils.log(entity)
         end
 
         -- Update projectiles.

@@ -31,7 +31,7 @@ function Projectile:update(game)
     -- Check for collision.
     local lane = game.lanes[self.lane_index]
 
-    for entity_id, _ in pairs(lane.entities_ids) do
+    for entity_id in pairs(lane.entities_ids) do
         local entity = game.entities[entity_id]
 
         if entity_id ~= self.id and entity:check_collision(self) and entity.tag ~= self.tag then

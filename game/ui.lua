@@ -87,7 +87,7 @@ function UI:load_buttons(game)
             self.is_enabled = true
 
             -- Check for collision of the button with the entities in the same lane to disable the button.
-            for entity_id, _ in pairs(lane.entities_ids) do
+            for entity_id in pairs(lane.entities_ids) do
                 local entity = game.entities[entity_id]
 
                 if entity:check_collision(self) then
